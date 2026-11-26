@@ -9,6 +9,8 @@
 One or two sentences: who the dashboard is for and what decisions it helps them make.
 Tip: it is not about "viewing data", but about making a specific decision. What will Aina Puig decide every Monday?
 -->
+Create a dashboard with the data available as clear and informative as possible and that answers the profile and needs of the described audience (user and questions).
+The dashboard should have 2 screens, the main screen with the overview of the data, the second with a detailed view of some important aspect.
 
 ## 2. Users and questions
 
@@ -27,15 +29,20 @@ Be specific: how many rows, which column, which unusual value and how many times
 Example row:
 | `accidents_bcn_2019_2025.csv` (N rows) | list of reported accidents in barcelona for years 2019 to 2025 | Some names in Catalan |
 -->
+| file name | description | quality issues |
+| -------------------------------------- | ------------------------------------ | ------------------------------------- |
+| `accidents_bcn_2019_2025.csv` (N rows) | list of reported accidents in barcelona for years 2019 to 2025 | Some names in Catalan |
 
 ## 4. Outputs
 
 <!--
 What the pipeline generates in data/processed/ and what the app displays.
-At a minimum, the three tables in the contract in AGENTS.md §3. Add the derived columns
+List each table with its key columns. Add the derived columns
 or extra tables you need for the metrics (e.g. date, time, working day…).
 -->
-- `data/processed/accidents.parquet` in accordance with the contract in `AGENTS.md`
+- `data/processed/accidents.parquet`: the cleaned accidents table, written by `uv run python -m src.pipeline`. It is the source of the dashboard data.
+- `dashboard/index.html`: the dashboard, generated with Vega-Altair. It loads its data from the JSON files in `dashboard/data/`, not inline.
+- `dashboard/data/*.json`: aggregated tables, one per chart or group of charts.
 
 ## 5. Requirements
 
@@ -43,18 +50,23 @@ or extra tables you need for the metrics (e.g. date, time, working day…).
 Numbered rules (R1, R2…), each verifiable and unambiguous. Separate them into groups.
 Each issue in section 3 should have a requirement stating how it is addressed.
 
-Examples of format:
-- R1. A trip appears only once: if a viaje_id is repeated, retain one row.
-- R7. Trips per working day = estimated trips on working days / number of working days. Working day = …
 -->
 
-**Data**
+### Data
 
 - R1. XX row only takes the values XXX and YYY
 
-**Metrics**
+### Metrics
 
-**Dashboard**
+### Dashboard
+
+- R11. Charts reference their data by URL (`alt.UrlData`) to the JSON files in `dashboard/data/`. The JSON files contain pre-aggregated data, never the raw rows.
+- R12. The dashboard shows the data source and the date of the most recent accident in the data.
+- R13. The figures in the JSON files are consistent with `accidents.parquet` (e.g. the total number of accidents matches).
+
+### Execution
+
+- R10. Every run of `uv run python -m src.pipeline` regenerates `dashboard/index.html` and all files in `dashboard/data/` from the processed data. No dashboard file is edited by hand.
 
 ## 6. Acceptance criteria
 
@@ -71,10 +83,14 @@ Two useful types:
 For anything that cannot be tested (e.g. whether a chart is understandable), indicate how it is verified.
 -->
 
-**Data** (`tests/acceptance/tests.py`, in addition to contact_tests.py)
+**Data** (`tests/acceptance/test_data.py`)
 
-- CA1 (R1). 
+**Dashboard** (`tests/acceptance/test_dashboard.py`)
 
+- CA1 (R10). After `uv run python -m src.pipeline`, `dashboard/index.html` and every file in `dashboard/data/*.json` exist and are not older than `data/processed/accidents.parquet`.
+- CA2 (R11). Every data source in the chart specs in `dashboard/index.html` is a URL to `data/<name>.json`; no spec contains inline `values`. Every JSON file in `dashboard/data/` has fewer rows than `accidents.parquet`.
+- CA3 (R12). `dashboard/index.html` contains the data source name and the date of the most recent accident in `accidents.parquet`, in the format defined in `DESIGN.md`.
+- CA4 (R13). The total number of accidents in `dashboard/data/<summary table>.json` equals the number of rows in `accidents.parquet`.
 
 ## 7. Out of scope
 

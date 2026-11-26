@@ -44,7 +44,7 @@ uv run pytest                               # tests
 uv run python scripts/traceability.py       # does every criterion have a test?
 ```
 
-Initially, `src/` is empty: the contract tests (CD1) are basic ones that can not be touched and the traceability check fail until the pipeline and `SPECS.md` exist. This is expected.
+Initially, `src/` is empty: the tests and the traceability check fail until the pipeline and the acceptance criteria in `SPECS.md` exist. This is expected.
 
 Each *push* runs all of the above in GitHub (the **Actions** tab).
 

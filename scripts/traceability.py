@@ -1,10 +1,11 @@
-"""Comprueba que cada criterio de aceptación de SPECS.md tiene al menos un test.
+"""Checks that every acceptance criterion in SPECS.md has at least one test.
 
     uv run python scripts/traceability.py
 
-Un criterio se declara en SPECS.md como "CA<número>" en la sección "Criterios de aceptación".
-Un test lo verifica si lleva @pytest.mark.criterio("CA<número>").
-Sale con código 1 si falta algún test o si un test cita un criterio que no existe.
+A criterion is declared in SPECS.md as "CA<number>" in the "Acceptance criteria" section
+(or "Criterios de aceptación").
+A test verifies it if it is marked with @pytest.mark.criterio("CA<number>").
+Exits with code 1 if a criterion has no test or if a test cites a criterion that does not exist.
 """
 from __future__ import annotations
 
@@ -12,43 +13,54 @@ import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parent.parent
-PROFESORADO = {f"CD{i}" for i in range(1, 6)}
+ROOT = Path(__file__).resolve().parent.parent
+
+SECTION_PATTERN = r"^##\s*\d*\.?\s*(?:Acceptance criteria|Criterios de aceptación)\s*$(.*?)(?=^##\s|\Z)"
+MARKER_PATTERN = r"criterio\(\s*[\"'](CA\d+)[\"']\s*\)"
 
 
-def criterios_en_specs() -> set[str]:
-    texto = (RAIZ / "SPECS.md").read_text(encoding="utf-8")
-    texto = re.sub(r"<!--.*?-->", "", texto, flags=re.S)        # ignorar las indicaciones de la plantilla
-    m = re.search(r"^##\s*\d*\.?\s*Criterios de aceptación\s*$(.*?)(?=^##\s|\Z)", texto, flags=re.M | re.S | re.I)
-    seccion = m.group(1) if m else ""
-    return set(re.findall(r"\bCA\d+\b", seccion))
+def criteria_in_specs() -> set[str]:
+    """Returns the CA identifiers declared in the acceptance criteria section of SPECS.md."""
+    text = (ROOT / "SPECS.md").read_text(encoding="utf-8")
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)  # ignore the template's instructions
+    match = re.search(SECTION_PATTERN, text, flags=re.M | re.S | re.I)
+    section = match.group(1) if match else ""
+    return set(re.findall(r"\bCA\d+\b", section))
 
 
-def criterios_en_tests() -> dict[str, list[str]]:
-    usados: dict[str, list[str]] = {}
-    for f in (RAIZ / "tests").rglob("test_*.py"):
-        for cid in re.findall(r"criterio\(\s*[\"']((?:CA|CD)\d+)[\"']\s*\)", f.read_text(encoding="utf-8")):
-            usados.setdefault(cid, []).append(str(f.relative_to(RAIZ)))
-    return usados
+def criteria_in_tests() -> dict[str, list[str]]:
+    """Maps each CA identifier cited by a test marker to the test files that cite it."""
+    used: dict[str, list[str]] = {}
+    for test_file in (ROOT / "tests").rglob("test_*.py"):
+        for criterion_id in re.findall(MARKER_PATTERN, test_file.read_text(encoding="utf-8")):
+            used.setdefault(criterion_id, []).append(str(test_file.relative_to(ROOT)))
+    return used
+
+
+def sort_key(criterion_id: str) -> tuple[str, int]:
+    """Sorts CA identifiers numerically (CA2 before CA10)."""
+    return criterion_id[:2], int(criterion_id[2:])
 
 
 def main() -> int:
-    definidos = criterios_en_specs()
-    usados = criterios_en_tests()
-    orden = lambda c: (c[:2], int(c[2:]))
-    if not definidos:
-        print("✘ SPECS.md no tiene criterios de aceptación (CA1, CA2…) en la sección 'Criterios de aceptación'.")
+    sys.stdout.reconfigure(encoding="utf-8")  # the Windows console (cp1252) cannot display ✔/✘
+    defined = criteria_in_specs()
+    used = criteria_in_tests()
+    if not defined:
+        print("✘ SPECS.md has no acceptance criteria (CA1, CA2…) in the 'Acceptance criteria' section.")
         return 1
-    sin_test = sorted(definidos - set(usados), key=orden)
-    desconocidos = sorted(set(usados) - definidos - PROFESORADO, key=orden)
-    for c in sorted(definidos, key=orden):
-        print(f"{'✔' if c in usados else '✘'} {c}: {', '.join(sorted(set(usados.get(c, [])))) or 'SIN TEST'}")
-    for c in desconocidos:
-        print(f"✘ {c}: lo cita {', '.join(sorted(set(usados[c])))} pero no existe en SPECS.md")
-    if sin_test or desconocidos:
-        print(f"\n{len(sin_test)} criterio(s) sin test y {len(desconocidos)} referencia(s) desconocida(s).")
+    without_test = sorted(defined - set(used), key=sort_key)
+    unknown = sorted(set(used) - defined, key=sort_key)
+    for criterion_id in sorted(defined, key=sort_key):
+        files = ", ".join(sorted(set(used.get(criterion_id, [])))) or "NO TEST"
+        print(f"{'✔' if criterion_id in used else '✘'} {criterion_id}: {files}")
+    for criterion_id in unknown:
+        files = ", ".join(sorted(set(used[criterion_id])))
+        print(f"✘ {criterion_id}: cited by {files} but not defined in SPECS.md")
+    if without_test or unknown:
+        print(f"\n{len(without_test)} criterion/criteria without a test and {len(unknown)} unknown reference(s).")
         return 1
-    print(f"\nTodos los criterios ({len(definidos)}) tienen al menos un test.")
+    print(f"\nAll criteria ({len(defined)}) have at least one test.")
     return 0
 
 
