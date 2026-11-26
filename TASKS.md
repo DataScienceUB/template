@@ -27,6 +27,14 @@ Explore distributions, outliers, missingness, inconsistencies, real versus forec
 Describe each field's type, domain, range, units, precision, time/geography, currency, and update frequency.
 Explore distributions, outliers, missingness, inconsistencies, real versus forecast data, and relationships using charts; choose fields and relationships for the visualization.
 
+- [ ] 1. Minimal pipeline: `uv run python -m src.pipeline` reads the CSV with explicit types and writes `data/processed/accidents.parquet` without cleaning (SPECS §4)
+- [ ] 2. Field profile: for each of the 29 columns, its type, domain or range, units, precision, missing values and distinct values; record the row count in SPECS §3
+- [ ] 3. Derived columns: check that `numero_victimes`, `total_lesionados`, `gravedad`, `fecha`, `dia_semana`, `fin_de_semana`, `franja_horaria` and `es_causa_vianant` agree with the original columns they come from
+- [ ] 4. Identity and coverage: check whether `numero_expedient` is unique, find duplicates, count rows per year and per `fichero_origen`, and find the first and last dates (feeds R12)
+- [ ] 5. Geography: match `codi_districte` with `nom_districte`, check neighbourhood and street names are spelled the same way across years, find unknown values, and find coordinates that are missing or outside Barcelona
+- [ ] 6. Distributions and outliers: accidents by year, month, weekday and hour; victims, deaths and vehicles per accident; charts for each
+- [ ] 7. Summary: list the quality issues found for SPECS §3, propose data requirements and criteria for the team, and choose the fields that answer P1–P6
+
 ## Iteration 2 · Audience and questions
 
 <!--
