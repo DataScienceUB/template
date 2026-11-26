@@ -71,7 +71,7 @@ Two useful types:
 For anything that cannot be tested (e.g. whether a chart is understandable), indicate how it is verified.
 -->
 
-**Data** (`tests/acceptance/test_datos.py`, in addition to CD1–CD5)
+**Data** (`tests/acceptance/tests.py`, in addition to contact_tests.py)
 
 - CA1 (R1). 
 
