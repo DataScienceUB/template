@@ -27,13 +27,15 @@ Explore distributions, outliers, missingness, inconsistencies, real versus forec
 Describe each field's type, domain, range, units, precision, time/geography, currency, and update frequency.
 Explore distributions, outliers, missingness, inconsistencies, real versus forecast data, and relationships using charts; choose fields and relationships for the visualization.
 
-- [ ] 1. Minimal pipeline: `uv run python -m src.pipeline` reads the CSV with explicit types and writes `data/processed/accidents.parquet` without cleaning (SPECS §4)
-- [ ] 2. Field profile: for each of the 29 columns, its type, domain or range, units, precision, missing values and distinct values; record the row count in SPECS §3
-- [ ] 3. Derived columns: check that `numero_victimes`, `total_lesionados`, `gravedad`, `fecha`, `dia_semana`, `fin_de_semana`, `franja_horaria` and `es_causa_vianant` agree with the original columns they come from
-- [ ] 4. Identity and coverage: check whether `numero_expedient` is unique, find duplicates, count rows per year and per `fichero_origen`, and find the first and last dates (feeds R12)
-- [ ] 5. Geography: match `codi_districte` with `nom_districte`, check neighbourhood and street names are spelled the same way across years, find unknown values, and find coordinates that are missing or outside Barcelona
-- [ ] 6. Distributions and outliers: accidents by year, month, weekday and hour; victims, deaths and vehicles per accident; charts for each
-- [ ] 7. Summary: list the quality issues found for SPECS §3, propose data requirements and criteria for the team, and choose the fields that answer P1–P6
+- [x] 1. Minimal pipeline: `uv run python -m src.pipeline` reads the CSV with explicit types and writes `data/processed/accidents.parquet` without cleaning (SPECS §4; R1, R2; CA5, CA6, CA7)
+  - Agente: created `src/pipeline.py` (reads the CSV with an explicit type for each column, `codi_districte` as nullable `Int64`, `fecha` as date; writes Parquet with no cleaning or renaming) and `tests/unit/test_pipeline.py`. Verified: the pipeline writes 54,954 rows × 29 columns; `uv run pytest tests/unit tests/acceptance/test_data.py` → 21 passed (CA5–CA7). Exploration and dashboard tests are deferred to tasks 2–6 and Iteration 6; traceability fails only on CA3, CA4 (no test yet). Notebook: `notebooks/bitacora/2026-11-26_T1_minimal_pipeline.ipynb`.
+  - Verificado por:
+- [ ] 2. Field profile: for each of the 29 columns, its type, domain or range, units, precision, missing values and distinct values; record the row count in SPECS §3 (R3; CA8)
+- [ ] 3. Derived columns: check that `numero_victimes`, `total_lesionados`, `gravedad`, `fecha`, `dia_semana`, `fin_de_semana`, `franja_horaria` and `es_causa_vianant` agree with the original columns they come from (R4; CA9)
+- [ ] 4. Identity and coverage: check whether `numero_expedient` is unique, find duplicates, count rows per year and per `fichero_origen`, and find the first and last dates (R5; CA10; feeds R12)
+- [ ] 5. Geography: match `codi_districte` with `nom_districte`, check neighbourhood and street names are spelled the same way across years, find unknown values, and find coordinates that are missing or outside Barcelona (R6; CA11)
+- [ ] 6. Distributions and outliers: accidents by year, month, weekday and hour; victims, deaths and vehicles per accident; charts for each (R7; CA12)
+- [ ] 7. Summary: list the quality issues found for SPECS §3, propose data requirements and criteria for the team, and choose the fields that answer P1–P6 (verified by review, SPECS §6)
 
 ## Iteration 2 · Audience and questions
 
@@ -87,6 +89,10 @@ Explain the interaction design using the relevant theoretical model from the cou
 Build and explain a high-fidelity dashboard in the selected delivery format, ready to view locally.
 Deliver the process explanations and samples, notebooks, and datasets.
 -->
+
+- [x] 8. Initial dashboard: `uv run python -m src.pipeline` writes `dashboard/data/*.json` and a 2-screen `dashboard/index.html` following DESIGN.md §1–§5 (R10, R11, R12, R13; CA1, CA2)
+  - Agente: built a throwaway prototype first (approved by the person), wrote its choices into DESIGN.md §1–§5, then created `src/dashboard_data.py` (6 aggregated tables) and `src/dashboard.py` (Altair charts loading the JSON by URL, titles computed from the data, header with source and latest date); `src/pipeline.py` now regenerates the dashboard after the Parquet. Unit tests in `tests/unit/test_dashboard_data.py` and `tests/unit/test_dashboard_page.py`. Verified: `uv run pytest tests/unit tests/acceptance/test_data.py tests/acceptance/test_dashboard.py` → 34 passed (CA1, CA2, CA5–CA7); both screens rendered from a local server and checked visually (no scroll at 1440 × 900). CA3, CA4 still have no test; exploration tests wait for tasks 2–6. Notebook: `notebooks/bitacora/2026-11-26_T8_initial_dashboard.ipynb`.
+  - Verificado por:
 
 ## Iteration 7 · Group and personal reflections
 

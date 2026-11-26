@@ -1,0 +1,372 @@
+[
+ {
+  "neighbourhood":"la Dreta de l'Eixample",
+  "district":"Eixample",
+  "serious":136
+ },
+ {
+  "neighbourhood":"l'Antiga Esquerra de l'Eixample",
+  "district":"Eixample",
+  "serious":75
+ },
+ {
+  "neighbourhood":"les Corts",
+  "district":"Les Corts",
+  "serious":56
+ },
+ {
+  "neighbourhood":"Sant Gervasi - Galvany",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":53
+ },
+ {
+  "neighbourhood":"la Nova Esquerra de l'Eixample",
+  "district":"Eixample",
+  "serious":50
+ },
+ {
+  "neighbourhood":"Sant Antoni",
+  "district":"Eixample",
+  "serious":46
+ },
+ {
+  "neighbourhood":"la Marina del Prat Vermell",
+  "district":"Sants-Montjuïc",
+  "serious":45
+ },
+ {
+  "neighbourhood":"el Fort Pienc",
+  "district":"Eixample",
+  "serious":43
+ },
+ {
+  "neighbourhood":"la Sagrada Família",
+  "district":"Eixample",
+  "serious":41
+ },
+ {
+  "neighbourhood":"Provençals del Poblenou",
+  "district":"Sant Martí",
+  "serious":35
+ },
+ {
+  "neighbourhood":"Sant Gervasi - la Bonanova",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":34
+ },
+ {
+  "neighbourhood":"Pedralbes",
+  "district":"Les Corts",
+  "serious":32
+ },
+ {
+  "neighbourhood":"el Baix Guinardó",
+  "district":"Horta-Guinardó",
+  "serious":31
+ },
+ {
+  "neighbourhood":"la Maternitat i Sant Ramon",
+  "district":"Les Corts",
+  "serious":29
+ },
+ {
+  "neighbourhood":"Sants",
+  "district":"Sants-Montjuïc",
+  "serious":28
+ },
+ {
+  "neighbourhood":"Horta",
+  "district":"Horta-Guinardó",
+  "serious":27
+ },
+ {
+  "neighbourhood":"les Tres Torres",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":27
+ },
+ {
+  "neighbourhood":"el Barri Gòtic",
+  "district":"Ciutat Vella",
+  "serious":26
+ },
+ {
+  "neighbourhood":"el Guinardó",
+  "district":"Horta-Guinardó",
+  "serious":26
+ },
+ {
+  "neighbourhood":"el Camp de l'Arpa del Clot",
+  "district":"Sant Martí",
+  "serious":24
+ },
+ {
+  "neighbourhood":"Diagonal Mar i el Front Marítim del Poblenou",
+  "district":"Sant Martí",
+  "serious":22
+ },
+ {
+  "neighbourhood":"el Poblenou",
+  "district":"Sant Martí",
+  "serious":22
+ },
+ {
+  "neighbourhood":"la Barceloneta",
+  "district":"Ciutat Vella",
+  "serious":21
+ },
+ {
+  "neighbourhood":"Sarrià",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":21
+ },
+ {
+  "neighbourhood":"el Poble-sec",
+  "district":"Sants-Montjuïc",
+  "serious":20
+ },
+ {
+  "neighbourhood":"la Vila de Gràcia",
+  "district":"Gràcia",
+  "serious":20
+ },
+ {
+  "neighbourhood":"Sant Andreu",
+  "district":"Sant Andreu",
+  "serious":20
+ },
+ {
+  "neighbourhood":"el Clot",
+  "district":"Sant Martí",
+  "serious":18
+ },
+ {
+  "neighbourhood":"la Marina de Port",
+  "district":"Sants-Montjuïc",
+  "serious":18
+ },
+ {
+  "neighbourhood":"la Bordeta",
+  "district":"Sants-Montjuïc",
+  "serious":18
+ },
+ {
+  "neighbourhood":"el Bon Pastor",
+  "district":"Sant Andreu",
+  "serious":18
+ },
+ {
+  "neighbourhood":"el Raval",
+  "district":"Ciutat Vella",
+  "serious":17
+ },
+ {
+  "neighbourhood":"Vallcarca i els Penitents",
+  "district":"Gràcia",
+  "serious":16
+ },
+ {
+  "neighbourhood":"el Parc i la Llacuna del Poblenou",
+  "district":"Sant Martí",
+  "serious":15
+ },
+ {
+  "neighbourhood":"el Camp d'en Grassot i Gràcia Nova",
+  "district":"Gràcia",
+  "serious":15
+ },
+ {
+  "neighbourhood":"el Carmel",
+  "district":"Horta-Guinardó",
+  "serious":14
+ },
+ {
+  "neighbourhood":"el Putxet i el Farró",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":14
+ },
+ {
+  "neighbourhood":"la Vila Olímpica del Poblenou",
+  "district":"Sant Martí",
+  "serious":13
+ },
+ {
+  "neighbourhood":"el Besòs i el Maresme",
+  "district":"Sant Martí",
+  "serious":13
+ },
+ {
+  "neighbourhood":"Hostafrancs",
+  "district":"Sants-Montjuïc",
+  "serious":13
+ },
+ {
+  "neighbourhood":"Vilapicina i la Torre Llobeta",
+  "district":"Nou Barris",
+  "serious":12
+ },
+ {
+  "neighbourhood":"la Font d'en Fargues",
+  "district":"Horta-Guinardó",
+  "serious":12
+ },
+ {
+  "neighbourhood":"Sant Pere, Santa Caterina i la Ribera",
+  "district":"Ciutat Vella",
+  "serious":12
+ },
+ {
+  "neighbourhood":"Sants - Badal",
+  "district":"Sants-Montjuïc",
+  "serious":11
+ },
+ {
+  "neighbourhood":"la Verneda i la Pau",
+  "district":"Sant Martí",
+  "serious":11
+ },
+ {
+  "neighbourhood":"Sant Genís dels Agudells",
+  "district":"Horta-Guinardó",
+  "serious":11
+ },
+ {
+  "neighbourhood":"la Trinitat Nova",
+  "district":"Nou Barris",
+  "serious":11
+ },
+ {
+  "neighbourhood":"la Guineueta",
+  "district":"Nou Barris",
+  "serious":10
+ },
+ {
+  "neighbourhood":"Navas",
+  "district":"Sant Andreu",
+  "serious":10
+ },
+ {
+  "neighbourhood":"la Prosperitat",
+  "district":"Nou Barris",
+  "serious":10
+ },
+ {
+  "neighbourhood":"Sant Martí de Provençals",
+  "district":"Sant Martí",
+  "serious":10
+ },
+ {
+  "neighbourhood":"la Trinitat Vella",
+  "district":"Sant Andreu",
+  "serious":9
+ },
+ {
+  "neighbourhood":"les Roquetes",
+  "district":"Nou Barris",
+  "serious":9
+ },
+ {
+  "neighbourhood":"Porta",
+  "district":"Nou Barris",
+  "serious":9
+ },
+ {
+  "neighbourhood":"Montbau",
+  "district":"Horta-Guinardó",
+  "serious":9
+ },
+ {
+  "neighbourhood":"la Sagrera",
+  "district":"Sant Andreu",
+  "serious":8
+ },
+ {
+  "neighbourhood":"el Poble Sec",
+  "district":"Sants-Montjuïc",
+  "serious":7
+ },
+ {
+  "neighbourhood":"Canyelles",
+  "district":"Nou Barris",
+  "serious":6
+ },
+ {
+  "neighbourhood":"la Vall d'Hebron",
+  "district":"Horta-Guinardó",
+  "serious":6
+ },
+ {
+  "neighbourhood":"el Congrés i els Indians",
+  "district":"Sant Andreu",
+  "serious":5
+ },
+ {
+  "neighbourhood":"Vallvidrera, el Tibidabo i les Planes",
+  "district":"Sarrià-Sant Gervasi",
+  "serious":5
+ },
+ {
+  "neighbourhood":"el Turó de la Peira",
+  "district":"Nou Barris",
+  "serious":5
+ },
+ {
+  "neighbourhood":"la Font de la Guatlla",
+  "district":"Sants-Montjuïc",
+  "serious":5
+ },
+ {
+  "neighbourhood":"la Salut",
+  "district":"Gràcia",
+  "serious":4
+ },
+ {
+  "neighbourhood":"Baró de Viver",
+  "district":"Sant Andreu",
+  "serious":4
+ },
+ {
+  "neighbourhood":"Can Baró",
+  "district":"Horta-Guinardó",
+  "serious":3
+ },
+ {
+  "neighbourhood":"la Teixonera",
+  "district":"Horta-Guinardó",
+  "serious":2
+ },
+ {
+  "neighbourhood":"Ciutat Meridiana",
+  "district":"Nou Barris",
+  "serious":2
+ },
+ {
+  "neighbourhood":"Vallbona",
+  "district":"Nou Barris",
+  "serious":2
+ },
+ {
+  "neighbourhood":"Can Peguera",
+  "district":"Nou Barris",
+  "serious":1
+ },
+ {
+  "neighbourhood":"el Coll",
+  "district":"Gràcia",
+  "serious":1
+ },
+ {
+  "neighbourhood":"Verdun",
+  "district":"Nou Barris",
+  "serious":1
+ },
+ {
+  "neighbourhood":"Torre Baró",
+  "district":"Nou Barris",
+  "serious":1
+ },
+ {
+  "neighbourhood":"la Clota",
+  "district":"Horta-Guinardó",
+  "serious":0
+ }
+]

@@ -1,0 +1,34 @@
+[
+ {
+  "indicator":"Accidents",
+  "year":2025,
+  "value":7741,
+  "previous_year":2024,
+  "previous_value":7536,
+  "change_pct":2.7202760085
+ },
+ {
+  "indicator":"Victims",
+  "year":2025,
+  "value":8636,
+  "previous_year":2024,
+  "previous_value":8511,
+  "change_pct":1.4686875808
+ },
+ {
+  "indicator":"Serious or fatal accidents",
+  "year":2025,
+  "value":252,
+  "previous_year":2024,
+  "previous_value":249,
+  "change_pct":1.2048192771
+ },
+ {
+  "indicator":"Deaths",
+  "year":2025,
+  "value":11,
+  "previous_year":2024,
+  "previous_value":11,
+  "change_pct":0.0
+ }
+]

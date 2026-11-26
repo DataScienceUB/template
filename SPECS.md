@@ -54,7 +54,27 @@ Each issue in section 3 should have a requirement stating how it is addressed.
 
 ### Data
 
-- R1. XX row only takes the values XXX and YYY
+- R1. The pipeline reads `data/raw/accidents_bcn_2019_2025.csv` and writes every row and column to `data/processed/accidents.parquet` without changing any value (Iteration 1: no cleaning yet).
+- R2. The pipeline reads the CSV with explicit types: `fecha` as a date; counts, codes and date parts as integers (nullable where values are missing); `longitud` and `latitud` as decimals; `es_causa_vianant` and `accidente_con_victimas` as booleans.
+
+### Exploration
+
+The exploration functions live in `src/exploration.py`, take the accidents table as input and return tables; they do not modify the data. Notebooks only call them and show the results.
+
+- R3. `profile_fields(df)` returns one row per column of `df` with `column`, `dtype`, `missing` (count), `missing_pct` (percentage, one decimal), `distinct` (number of distinct non-missing values), `min` and `max` (only for numeric and date columns; empty otherwise).
+- R4. `check_derived_columns(df)` returns, for each derived column, the number of rows where its value differs from the rule computed from its source columns:
+  - `numero_victimes` = `numero_morts` + `numero_lesionats_greus` + `numero_lesionats_lleus`
+  - `total_lesionados` = `numero_lesionats_greus` + `numero_lesionats_lleus`
+  - `fecha` = the date formed by `nk_any`, `mes_any` and `dia_mes`
+  - `dia_semana` = the English weekday name of `fecha`; `descripcio_dia_setmana` = its Catalan name
+  - `fin_de_semana` = `Fin de semana` on Saturday and Sunday, `Laborable` otherwise
+  - `franja_horaria` = `Madrugada (00-06h)` for `hora_dia` 0–5, `Manana (06-12h)` for 6–11, `Tarde (12-18h)` for 12–17, `Noche (18-24h)` for 18–23
+  - `gravedad` = `Mortal` if `numero_morts` > 0, else `Grave` if `numero_lesionats_greus` > 0, else `Leve`
+  - `accidente_con_victimas` = `numero_victimes` > 0
+  - `es_causa_vianant` = `descripcio_causa_vianant` is neither `No és causa del vianant` (with or without accent) nor `Desconegut`
+- R5. `check_identity_and_coverage(df)` returns the number of repeated `numero_expedient` values (rows beyond the first occurrence), the number of fully duplicated rows, the number of rows per `nk_any` and per `fichero_origen`, and the first and last `fecha`.
+- R6. `check_geography(df)` returns: the `codi_districte` values with more than one `nom_districte` and the `nom_districte` values with more than one `codi_districte`; the `nom_barri` values that do not appear in every year; the number of rows that are missing or `Desconegut` in `nom_districte`, `nom_barri` and `nom_carrer`; the number of rows with missing coordinates; and the number of rows outside the approximate Barcelona box (`longitud` 2.05–2.23, `latitud` 41.31–41.47).
+- R7. `count_by(df, column)` returns the number of accidents per value of `column`, sorted by value. `describe_counts(df, column)` returns `min`, `median`, `mean`, `max` and `outliers` (number of rows above Q3 + 1.5 × IQR, with pandas' default quantiles) for a numeric column. They are used for accidents by `nk_any`, `mes_any`, `descripcio_dia_setmana` and `hora_dia`, and for `numero_victimes`, `numero_morts` and `numero_vehicles_implicats`.
 
 ### Metrics
 
@@ -82,8 +102,23 @@ Two useful types:
 
 For anything that cannot be tested (e.g. whether a chart is understandable), indicate how it is verified.
 -->
-
 **Data** (`tests/acceptance/test_data.py`)
+
+- CA5 (R1). `accidents.parquet` has the same number of rows (54,954) and the same 29 columns, in the same order, as the raw CSV.
+- CA6 (R1). `accidents.parquet` has the same `numero_expedient` values, the same total `numero_victimes` and the same number of missing values in each column as the raw CSV.
+- CA7 (R2). In `accidents.parquet`, `fecha` is a date column; `codi_districte`, `nk_any`, `mes_any`, `dia_mes`, `hora_dia`, `numero_morts`, `numero_lesionats_lleus`, `numero_lesionats_greus`, `numero_victimes`, `numero_vehicles_implicats` and `total_lesionados` are integer columns; `longitud` and `latitud` are decimal columns; `es_causa_vianant` and `accidente_con_victimas` are boolean columns.
+
+**Exploration** (`tests/acceptance/test_exploration.py`, small examples calculated by hand)
+
+- CA8 (R3). With a 4-row table where `a` = 1, 2, 2, missing and `b` = `x`, `y`, `x`, `z`, the profile gives for `a`: missing 1, missing_pct 25.0, distinct 2, min 1, max 2; and for `b`: missing 0, missing_pct 0.0, distinct 3, empty min and max.
+- CA9 (R4). With a 2-row table where row 1 follows every rule and row 2 follows every rule except `total_lesionados` = 5 (instead of 3) and `franja_horaria` = `Tarde (12-18h)` with `hora_dia` = 9, the result is 1 for `total_lesionados` and `franja_horaria` and 0 for every other derived column.
+- CA10 (R5). With 4 rows where `numero_expedient` = A, A, B, C, rows 1 and 2 are identical, `nk_any` = 2019, 2019, 2020, 2020 and `fecha` = 2019-01-01, 2019-01-01, 2020-03-05, 2020-12-31, the result is: 1 repeated expedient, 1 duplicated row, 2 rows in 2019 and 2 in 2020, first date 2019-01-01, last date 2020-12-31.
+- CA11 (R6). With 4 rows where `codi_districte` 1 is named `Ciutat Vella` twice and `Ciutat vella` once, one row has missing coordinates, one row has `longitud` 2.30 and one row has `nom_carrer` = `Desconegut`, the result lists code 1 as having more than one name, and counts 1 row with missing coordinates, 1 row outside Barcelona and 1 unknown street.
+- CA12 (R7). With `hora_dia` = 8, 8, 9, `count_by` gives 8 → 2 and 9 → 1. With `numero_victimes` = 0, 1, 1, 1, 2, 10, `describe_counts` gives min 0, median 1, mean 2.5, max 10 and 1 outlier.
+
+**Exploration findings** (verified by a team member, not by tests)
+
+- Tasks 2–7 of Iteration 1 are also verified by reviewing their notebook in `notebooks/bitacora/`: each finding is a figure produced by the functions in R3–R7 on `accidents.parquet`, the charts of task 6 are built by functions in `src/`, and the quality issues found are listed in §3. The reviewer records this in the `Verificado por:` line in `TASKS.md`.
 
 **Dashboard** (`tests/acceptance/test_dashboard.py`)
 
@@ -99,6 +134,11 @@ For anything that cannot be tested (e.g. whether a chart is understandable), ind
 ## 8. Open questions
 
 <!-- Questions still to be decided. Once decided, move them to "Decisions". -->
+
+- Data size: AGENTS.md §8 and ARCHITECTURE.md §5 mention almost two million rows, but the raw CSV has 54,954. Will more data be added, or should those documents be corrected?
+- Column names: AGENTS.md §6 asks for English names, but the CSV columns are in Catalan and Spanish. Should the pipeline rename them to English, and in which task? (R1–R7 use the original names until this is decided.)
+- Values: should Catalan and Spanish values (`Gener`, `Dimarts`, `Leve`…) be translated, or only the column names?
+- `es_causa_vianant`: R4 assumes it is true when `descripcio_causa_vianant` names a pedestrian cause; task 3 checks whether the data agrees.
 
 ## 9. Decisions
 

@@ -1,0 +1,32 @@
+[
+ {
+  "cause":"Desobeir el senyal del semàfor",
+  "accidents":1319,
+  "serious":108,
+  "serious_pct":8.1880212282
+ },
+ {
+  "cause":"Creuar per fora pas de vianants",
+  "accidents":1108,
+  "serious":85,
+  "serious_pct":7.6714801444
+ },
+ {
+  "cause":"Altres",
+  "accidents":718,
+  "serious":30,
+  "serious_pct":4.1782729805
+ },
+ {
+  "cause":"Transitar a peu per la calçada",
+  "accidents":339,
+  "serious":19,
+  "serious_pct":5.604719764
+ },
+ {
+  "cause":"Desobeir altres senyals",
+  "accidents":32,
+  "serious":1,
+  "serious_pct":3.125
+ }
+]

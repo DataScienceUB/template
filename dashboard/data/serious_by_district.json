@@ -1,0 +1,42 @@
+[
+ {
+  "district":"Eixample",
+  "serious":391
+ },
+ {
+  "district":"Sant Martí",
+  "serious":183
+ },
+ {
+  "district":"Sants-Montjuïc",
+  "serious":165
+ },
+ {
+  "district":"Sarrià-Sant Gervasi",
+  "serious":154
+ },
+ {
+  "district":"Horta-Guinardó",
+  "serious":141
+ },
+ {
+  "district":"Les Corts",
+  "serious":117
+ },
+ {
+  "district":"Nou Barris",
+  "serious":79
+ },
+ {
+  "district":"Ciutat Vella",
+  "serious":76
+ },
+ {
+  "district":"Sant Andreu",
+  "serious":74
+ },
+ {
+  "district":"Gràcia",
+  "serious":56
+ }
+]

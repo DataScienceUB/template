@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barcelona Road Accidents</title>
+<script src="https://cdn.jsdelivr.net/npm/vega@6.1.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@6.4.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@7.0.2"></script>
+<style>
+  :root { --page:#f9f9f9; --surface:#ffffff; --ink:#191919; --ink-2:#666666; --line:rgba(11,11,11,0.10); --accent:#257de0; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--page); color:var(--ink);
+         font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display:flex; align-items:baseline; gap:24px; padding:14px 24px 0; flex-wrap:wrap; }
+  h1 { font-size:20px; margin:0; font-weight:650; }
+  .meta { color:var(--ink-2); font-size:12px; }
+  nav { display:flex; gap:4px; padding:10px 24px 0; }
+  nav button { font:inherit; font-size:13px; border:1px solid var(--line); background:var(--surface);
+                color:var(--ink-2); padding:6px 14px; border-radius:6px; cursor:pointer; }
+  nav button[aria-selected="true"] { color:var(--ink); border-color:var(--accent);
+                                      box-shadow: inset 0 -2px 0 var(--accent); font-weight:600; }
+  main { padding:12px 24px 16px; }
+  section[hidden] { display:none; }
+  .kpis { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; margin-bottom:12px; }
+  .kpi, .card { background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+  .kpi { padding:10px 14px; }
+  .kpi-label { font-size:12px; color:var(--ink-2); }
+  .kpi-value { font-size:26px; font-weight:650; margin-top:2px; }
+  .kpi-delta { font-size:12px; color:var(--ink-2); }
+  .grid { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .stack { display:grid; gap:12px; }
+  .card { padding:12px; overflow:hidden; }
+  .note { font-size:12px; color:var(--ink-2); margin-top:10px; }
+  @media (max-width: 1100px) { .grid, .grid2, .kpis { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Barcelona road accidents</h1>
+  <span class="meta">Source: Open Data BCN, Guàrdia Urbana accident files 2019–2025 · Latest accident: 31/12/2025</span>
+</header>
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-screen="overview">Overview</button>
+  <button role="tab" aria-selected="false" data-screen="detail">Serious accidents</button>
+</nav>
+<main>
+  <section id="overview">
+    <div class="kpis">
+<div class="kpi"><div class="kpi-label">Accidents in 2025</div><div class="kpi-value">7 741</div><div class="kpi-delta">▲ 2.7% vs 2024</div></div>
+<div class="kpi"><div class="kpi-label">Victims in 2025</div><div class="kpi-value">8 636</div><div class="kpi-delta">▲ 1.5% vs 2024</div></div>
+<div class="kpi"><div class="kpi-label">Serious or fatal accidents in 2025</div><div class="kpi-value">252</div><div class="kpi-delta">▲ 1.2% vs 2024</div></div>
+<div class="kpi"><div class="kpi-label">Deaths in 2025</div><div class="kpi-value">11</div><div class="kpi-delta">= same as 2024</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div id="year"></div></div>
+      <div class="card"><div id="heat"></div></div>
+      <div class="card"><div id="district"></div></div>
+    </div>
+  </section>
+  <section id="detail" hidden>
+    <div class="grid2">
+      <div class="card"><div id="neighbourhood"></div></div>
+      <div class="stack">
+        <div class="card"><div id="serious_year"></div></div>
+        <div class="card"><div id="causes"></div></div>
+      </div>
+    </div>
+    <p class="note">“Serious or fatal” = accidents with at least one death or seriously injured person.
+    232 accidents without a district are not shown in the district and neighbourhood charts.
+    P4 (which groups of people are affected) cannot be answered yet: the accidents table has no person or vehicle type.</p>
+  </section>
+</main>
+<script>
+const specs = {"year": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "data": {"url": "data/accidents_per_year.json"}, "mark": {"type": "bar", "color": "#257de0", "cornerRadiusEnd": 4}, "encoding": {"tooltip": [{"field": "year", "title": "Year", "type": "ordinal"}, {"field": "accidents", "format": ",", "title": "Accidents", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "year", "title": null, "type": "ordinal"}, "y": {"field": "accidents", "title": "Accidents", "type": "quantitative"}}, "height": 250, "title": {"text": "2020 had the fewest accidents (6 268); 2025 had 7 741", "subtitle": "Accidents per year (P5)"}, "width": 380, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}, "heat": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "data": {"url": "data/accidents_by_weekday_hour.json"}, "mark": {"type": "rect", "cornerRadius": 2}, "encoding": {"color": {"field": "accidents", "legend": {"gradientLength": 160, "orient": "bottom"}, "scale": {"range": ["#cce3fd", "#84b9f3", "#338ced", "#1b64be", "#0e3d7e"]}, "title": "Accidents", "type": "quantitative"}, "tooltip": [{"field": "weekday", "title": "Day", "type": "ordinal"}, {"field": "hour", "title": "Hour", "type": "ordinal"}, {"field": "accidents", "format": ",", "title": "Accidents", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0, "labelExpr": "datum.value % 3 == 0 ? datum.label : ''"}, "field": "hour", "title": "Hour of day", "type": "ordinal"}, "y": {"field": "weekday", "sort": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], "title": null, "type": "ordinal"}}, "height": 190, "title": {"text": "Accidents peak on Fridays at 14 h", "subtitle": "Accidents by weekday and hour, 2019–2025 (P2)"}, "width": 380, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}, "district": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "data": {"url": "data/serious_by_district.json"}, "mark": {"type": "bar", "color": "#257de0", "cornerRadiusEnd": 4}, "encoding": {"tooltip": [{"field": "district", "title": "District", "type": "nominal"}, {"field": "serious", "format": ",", "title": "Serious or fatal", "type": "quantitative"}], "x": {"field": "serious", "title": "Serious or fatal accidents", "type": "quantitative"}, "y": {"field": "district", "sort": "-x", "title": null, "type": "nominal"}}, "height": 250, "title": {"text": "Eixample has the most serious accidents (391)", "subtitle": "Serious or fatal accidents by district, 2019–2025 (P1)"}, "width": 280, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}, "neighbourhood": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "layer": [{"mark": {"type": "bar", "color": "#257de0", "cornerRadiusEnd": 4}, "encoding": {"tooltip": [{"field": "neighbourhood", "title": "Neighbourhood", "type": "nominal"}, {"field": "district", "title": "District", "type": "nominal"}, {"field": "serious", "format": ",", "title": "Serious or fatal", "type": "quantitative"}], "x": {"field": "serious", "title": "Serious or fatal accidents", "type": "quantitative"}, "y": {"field": "neighbourhood", "sort": "-x", "title": null, "type": "nominal"}}, "transform": [{"joinaggregate": [{"op": "mean", "field": "serious", "as": "average"}]}, {"window": [{"op": "row_number", "field": "", "as": "position"}], "sort": [{"field": "serious", "order": "descending"}]}, {"filter": "datum.position <= 15"}]}, {"mark": {"type": "rule", "color": "#666666", "strokeDash": [4, 3]}, "encoding": {"tooltip": [{"aggregate": "mean", "field": "average", "format": ".1f", "title": "Average of all neighbourhoods", "type": "quantitative"}], "x": {"aggregate": "mean", "field": "average", "type": "quantitative"}}, "transform": [{"joinaggregate": [{"op": "mean", "field": "serious", "as": "average"}]}, {"window": [{"op": "row_number", "field": "", "as": "position"}], "sort": [{"field": "serious", "order": "descending"}]}, {"filter": "datum.position <= 15"}]}, {"mark": {"type": "text", "align": "left", "baseline": "bottom", "color": "#666666", "dx": 4, "fontSize": 11}, "encoding": {"text": {"value": "average 19"}, "x": {"aggregate": "mean", "field": "average", "type": "quantitative"}, "y": {"value": -2}}, "transform": [{"joinaggregate": [{"op": "mean", "field": "serious", "as": "average"}]}, {"window": [{"op": "row_number", "field": "", "as": "position"}], "sort": [{"field": "serious", "order": "descending"}]}, {"filter": "datum.position <= 15"}]}], "data": {"url": "data/serious_by_neighbourhood.json"}, "height": 370, "title": {"text": "la Dreta de l'Eixample has 7× the neighbourhood average", "subtitle": "Serious or fatal accidents, top 15 of 74 neighbourhoods, 2019–2025 (P1, P6)"}, "width": 260, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}, "serious_year": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "data": {"url": "data/accidents_per_year.json"}, "mark": {"type": "line", "color": "#257de0", "point": {"color": "#257de0", "size": 60, "stroke": "white", "strokeWidth": 2}, "strokeWidth": 2}, "encoding": {"tooltip": [{"field": "year", "title": "Year", "type": "ordinal"}, {"field": "serious", "format": ",", "title": "Serious or fatal", "type": "quantitative"}], "x": {"axis": {"labelAngle": 0}, "field": "year", "title": null, "type": "ordinal"}, "y": {"field": "serious", "scale": {"zero": true}, "title": "Serious or fatal accidents", "type": "quantitative"}}, "height": 180, "title": {"text": "Serious accidents have risen every year since 2020", "subtitle": "Serious or fatal accidents per year (P5)"}, "width": 380, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}, "causes": {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300, "stroke": null}, "axis": {"labelColor": "#666666", "titleColor": "#666666", "gridColor": "#e7e7e7", "domainColor": "#c2c2c2", "tickColor": "#c2c2c2", "labelFontSize": 11, "titleFontSize": 11, "titleFontWeight": 400}, "background": "transparent", "font": "system-ui, -apple-system, 'Segoe UI', sans-serif", "legend": {"labelColor": "#666666", "titleColor": "#666666", "labelFontSize": 11, "titleFontSize": 11}, "title": {"anchor": "start", "color": "#191919", "fontSize": 14, "fontWeight": 600, "subtitleColor": "#666666", "subtitleFontSize": 12, "offset": 10}}, "data": {"url": "data/pedestrian_causes.json"}, "mark": {"type": "bar", "color": "#257de0", "cornerRadiusEnd": 4}, "encoding": {"tooltip": [{"field": "cause", "title": "Pedestrian cause", "type": "nominal"}, {"field": "accidents", "format": ",", "title": "Accidents", "type": "quantitative"}, {"field": "serious_pct", "format": ".1f", "title": "% serious or fatal", "type": "quantitative"}], "x": {"field": "accidents", "title": "Accidents", "type": "quantitative"}, "y": {"field": "cause", "sort": "-x", "title": null, "type": "nominal"}}, "height": 140, "title": {"text": "“Desobeir el senyal del semàfor” is the most frequent pedestrian cause", "subtitle": "Accidents with a pedestrian cause, 2019–2025 (P3)"}, "width": 220, "$schema": "https://vega.github.io/schema/vega-lite/v6.4.1.json"}};
+const options = { actions: false, renderer: "svg", formatLocale: {"decimal": ".", "thousands": " ", "grouping": [3], "currency": ["", ""]} };
+for (const [id, spec] of Object.entries(specs)) vegaEmbed("#" + id, spec, options);
+const tabs = document.querySelectorAll("nav button");
+tabs.forEach(tab => tab.addEventListener("click", () => {
+  tabs.forEach(t => t.setAttribute("aria-selected", t === tab));
+  document.querySelectorAll("main section").forEach(s => s.hidden = s.id !== tab.dataset.screen);
+  window.dispatchEvent(new Event("resize"));
+}));
+if (location.hash === "#detail") document.querySelector('[data-screen="detail"]').click();
+</script>
+</body>
+</html>

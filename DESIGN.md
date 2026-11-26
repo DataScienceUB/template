@@ -5,32 +5,34 @@
 
 ## 1. Naming conventions
 
-<!--
-How columns, variables and files are named. AGENTS.md already requires Spanish and snake_case.
-Decide, for example: should the original Catalan names be retained? Are percentages
-stored as proportions (0.12) or as numbers (12)?
--->
+- Code (modules, functions, variables) and the columns of the dashboard JSON files: English, `snake_case` (AGENTS.md §6), e.g. `accidents_per_year.json` with columns `year`, `accidents`, `serious`.
+- Columns of `accidents.parquet`: the original Catalan and Spanish names are kept until SPECS.md §8 decides whether to translate them.
+- Text on screen: English. Place names (districts, neighbourhoods, streets) and pedestrian causes are shown as they appear in the data (Catalan).
+- Percentages are stored as numbers (12.3 means 12.3%), with full precision; they are rounded only for display.
+- "Serious or fatal accident": an accident with `gravedad` = `Grave` or `Mortal` (at least one death or seriously injured person). Column name: `serious`.
 
 ## 2. Formats
 
-<!--
-How each figure is displayed on screen. Think of a non-technical Spanish reader.
--->
+The same formats apply to KPI tiles, chart titles, axes and tooltips.
 
 | Item | Format | Example |
 | --- | --- | --- |
-| Numbers | | |
-| Percentages | | |
-| Change from the previous period | | |
-| Dates | | |
-| Missing data | | |
+| Numbers | Whole numbers, a space as thousands separator | 7 741 |
+| Percentages | One decimal, point as decimal separator, `%` without a space | 8.2% |
+| Change from the previous period | ▲ or ▼, the absolute change in % with one decimal, and the comparison year; `= same as <year>` when unchanged; `was 0 in <year>` when the previous value is 0 (no percentage). Arrow and text, never colour alone | ▲ 2.7% vs 2024 |
+| Dates | dd/mm/yyyy | 31/12/2025 |
+| Missing data | Rows missing the field a chart needs are left out of that chart; a footnote states how many | 232 accidents without a district are not shown in the district and neighbourhood charts |
 
 ## 3. Chart style
 
-<!--
-Template, fixed colours,  scales, axes and titles.
-Tip: a good title states the conclusion, not the topic.
--->
+- **Library:** Vega-Altair, rendered as SVG with vega 6.1.2, vega-lite 6.4.1 and vega-embed 7.0.2 (exact versions from jsDelivr). No chart actions menu.
+- **Typeface:** the system sans (`system-ui, -apple-system, "Segoe UI", sans-serif`) everywhere.
+- **Theme:** light only for now. Page `#f9f9f9`, cards `#ffffff` with a hairline border and 8px radius, primary text `#191919`, secondary text `#666666`, gridlines `#e7e7e7`, axis lines `#c2c2c2`.
+- **Colour:** one series per chart, in blue `#257de0`. Magnitude in a heatmap uses the single-hue blue ramp `#cce3fd` → `#84b9f3` → `#338ced` → `#1b64be` → `#0e3d7e`. Reference values (e.g. an average) are a dashed `#666666` rule with a direct text label.
+- **Marks:** bars with 4px rounded ends at the value end; lines 2px with point markers ringed in white; heatmap cells with 2px corner radius.
+- **Scales and axes:** bars and lines of counts start at zero; one y-axis per chart, never two; horizontal axis labels; categorical bars sorted from largest to smallest.
+- **Titles:** the title states the conclusion and is computed from the data on every run (no fixed figures); the subtitle states the measure, the period and the question it answers (P…).
+- **Tooltips:** every mark has a tooltip with its category and formatted values.
 
 ## Optional dashboard design rules
 
@@ -439,17 +441,28 @@ slides (2026–27), citing Joanna Martin (2018).
 
 ## 4. Dashboard structure
 
-<!--
-What appears in each area, from top to bottom: sidebar, header, KPIs (which ones and in what order)
-and screens or tabs. One screen per question in SPECS §2.
--->
+Every screen fits on a 1440 × 900 desktop screen without scrolling (hard rule above). The questions P1–P6 are those in TASKS.md, Iteration 2.
 
 | Screen | Question | Content, from top to bottom |
 | --- | --- | --- |
-| | | |
+| Header (all screens) | — | Title "Barcelona road accidents"; data source; date of the most recent accident (R12); two tabs: Overview, Serious accidents |
+| 1. Overview | P1, P2, P5 | Four KPI tiles for the latest year with the change from the previous year: accidents, victims, serious or fatal accidents, deaths. Below, three charts side by side: accidents per year (bars, P5); accidents by weekday and hour, 2019–2025 (heatmap, P2); serious or fatal accidents by district (horizontal bars, P1) |
+| 2. Serious accidents | P1, P3, P5, P6 | Left: top 15 neighbourhoods by serious or fatal accidents, with the dashed average of all neighbourhoods (horizontal bars, P1, P6). Right, top: serious or fatal accidents per year (line, P5). Right, bottom: accidents with a pedestrian cause, excluding "not the pedestrian's fault" and "unknown" (horizontal bars, P3). Footnote: definition of serious or fatal, missing-data counts, and that P4 cannot be answered with the current data |
+
+**Data files** (`dashboard/data/`, one per chart or group of charts, R11):
+
+| File | Columns | Used by |
+| --- | --- | --- |
+| `kpis.json` | `indicator`, `year`, `value`, `previous_year`, `previous_value`, `change_pct` | KPI tiles |
+| `accidents_per_year.json` | `year`, `accidents`, `serious`, `victims`, `deaths` | Accidents per year; serious per year. Its `accidents` column adds up to the rows of `accidents.parquet` (R13) |
+| `accidents_by_weekday_hour.json` | `weekday`, `weekday_order`, `hour`, `accidents` | Heatmap |
+| `serious_by_district.json` | `district`, `serious` | Districts chart |
+| `serious_by_neighbourhood.json` | `neighbourhood`, `district`, `serious` (all neighbourhoods; the chart keeps the top 15 and computes the average) | Neighbourhoods chart |
+| `pedestrian_causes.json` | `cause`, `accidents`, `serious`, `serious_pct` | Pedestrian causes chart |
 
 ## 5. Filters and interaction
 
-<!-- Which filters are available, their default values and what they affect. -->
-
-<!-- What the user sees when a filter returns no data, when a comparison period is missing, etc. Never an error. -->
+- No filters in the initial version.
+- Tabs switch between the two screens; opening the page with `#detail` shows the Serious accidents screen.
+- Tooltips on every mark (§3).
+- Since there are no filters, there is no empty state; missing data is handled as in §2.
